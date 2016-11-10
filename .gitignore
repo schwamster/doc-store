@@ -1,0 +1,8 @@
+/publish/web
+/src/doc-store/bin/Debug/netcoreapp1.0
+/src/doc-store/bin/release/netcoreapp1.0
+/src/doc-store/obj/Debug/netcoreapp1.0
+/src/doc-store/obj/release/netcoreapp1.0
+/.vs/doc-store/v14
+/.vs/config
+/.vs/restore.dg

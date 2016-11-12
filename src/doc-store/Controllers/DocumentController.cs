@@ -53,14 +53,14 @@ namespace doc_store.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost]
-        public DocumentAddResult Post(string user, string client, ICollection<IFormFile> file)
+        public DocumentAddResult Post(string user, string client, id string, ICollection<IFormFile> file)
         {
             this.logger.LogInformation("document received");
             var document = new Document()
             {
                 Client = client,
                 User = user,
-                Id = Guid.NewGuid()
+                Id = id
             };
 
             var f = file.First();

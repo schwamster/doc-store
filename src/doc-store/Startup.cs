@@ -47,7 +47,7 @@ namespace doc_store
                     Title = "doc-store API",
                     Description = "manage the document store",
                     TermsOfService = "None",
-                    Contact = new Contact { Name = "Bastian Töpfer", Email = "", Url = "http://github.com/schwamster" }
+                    Contact = new Contact { Name = "Bastian Töpfer", Email = "bastian.toepfer@gmail.com", Url = "http://github.com/schwamster/docStack" }
                 });
 
                 //Determine base path for the application.

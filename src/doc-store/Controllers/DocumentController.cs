@@ -47,42 +47,16 @@ namespace doc_store.Controllers
         /// <summary>
         /// Add a document
         /// </summary>
-        /// <param name="name">name of the document</param>
-        /// <param name="user">name of the user adding the document</param>
-        /// <param name="client">name of the client adding the document</param>
-        /// <param name="file"></param>
+        /// <param name="document">the document to add</param>
         /// <returns></returns>
         [HttpPost]
-        public DocumentAddResult Post(string user, string client, id string, ICollection<IFormFile> file)
+        public DocumentAddResult Post([FromBody]Document document)
         {
             this.logger.LogInformation("document received");
-            var document = new Document()
-            {
-                Client = client,
-                User = user,
-                Id = id
-            };
-
-            var f = file.First();
-            if (f.Length > 0)
-            {
-                document.Name = f.FileName;
-                var bytes = ConvertToBytes(f);
-                document.Content = System.Convert.ToBase64String(bytes);
-                this.logger.LogInformation("Adding document to store");
-            }
-
+            this.logger.LogInformation("Adding document to store");
             var result = this.store.AddDocument(document);
 
             return result;
-        }
-
-        internal static byte[] ConvertToBytes(IFormFile image)
-        {
-            byte[] bytes = null;
-            BinaryReader reader = new BinaryReader(image.OpenReadStream());
-            bytes = reader.ReadBytes((int)image.Length);
-            return bytes;
         }
 
         //// PUT api/values/5

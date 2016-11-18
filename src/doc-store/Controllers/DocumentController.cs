@@ -7,6 +7,7 @@ using doc_store.Store;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Microsoft.AspNet.JsonPatch;
 
 namespace doc_store.Controllers
 {
@@ -57,6 +58,46 @@ namespace doc_store.Controllers
             var result = this.store.AddDocument(document);
 
             return result;
+        }
+
+        /// <summary>
+        /// Right now you can only update the property extractedText
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a GUID and not an integer.
+        ///  
+        ///     PATCH /api/document/{id}
+        ///     [
+        ///         {
+        ///             "value": "das ist der text",
+        ///             "path": "/extractedText",
+        ///             "op": "add",
+        ///             "from": "string"
+        ///         }
+        ///     ]
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="patch"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}")]
+        public IActionResult Patch(Guid id, [FromBody]JsonPatchDocument<Document> patch)
+        {
+            var document = new Document(); 
+            patch.ApplyTo(document);
+
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(ModelState);
+            }
+
+            var model = new
+            {
+                patch
+            };
+
+            this.store.AddExtractedText(id, document.ExtractedText);
+
+            return Ok(model);
         }
 
         //// PUT api/values/5

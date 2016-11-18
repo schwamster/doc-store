@@ -25,6 +25,39 @@ namespace doc_store.Store
         /// </summary>
         [JsonProperty("content")]
         public string Content { get; set; }
+
+        [JsonProperty("extractedText")]
+        public string ExtractedText { get; set; }
+
+        public string[] State { get; set; }
+        [JsonProperty("version")]
+        public int Version { get; set; }
+
+        /// <summary>
+        /// If a document has multiple versions each document has a different id, they do share the documentSequenceId
+        /// The documentSequenceId equals the Id of the first document in the sequence
+        /// </summary>
+        [JsonProperty("documentSequenceId")]
+        public Guid DocumentSequenceId { get; set; }
+    }
+
+    public static class DocumentMapper
+    {
+        public static Document Convert(this StoreDocument input)
+        {
+            return new Store.Document()
+            {
+                Client = input.Client,
+                Content = input.Content,
+                DocumentSequenceId = input.DocumentSequenceId,
+                ExtractedText = input.ExtractedText,
+                Id = input.Id,
+                Name = input.Name,
+                State = input.State,
+                User = input.User,
+                Version = input.Version
+            };
+        }
     }
 
     public class StoreDocument : Document

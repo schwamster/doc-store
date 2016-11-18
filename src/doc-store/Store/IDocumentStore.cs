@@ -9,6 +9,8 @@ namespace doc_store.Store
     {
         DocumentAddResult AddDocument(Document document);
         StoreDocument GetDocument(Guid id);
+
+        StoreDocument AddExtractedText(Guid id, string extractedText);
     }
 
     /// <summary>

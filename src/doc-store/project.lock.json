@@ -43,6 +43,26 @@
           }
         }
       },
+      "Microsoft.AspNet.JsonPatch/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.CSharp": "4.0.1-beta-23516",
+          "Newtonsoft.Json": "6.0.6",
+          "System.Collections.Concurrent": "4.0.11-beta-23516",
+          "System.ComponentModel.TypeConverter": "4.0.1-beta-23516",
+          "System.Globalization": "4.0.11-beta-23516",
+          "System.Reflection.Extensions": "4.0.1-beta-23516",
+          "System.Resources.ResourceManager": "4.0.1-beta-23516",
+          "System.Runtime.Extensions": "4.0.11-beta-23516",
+          "System.Text.Encoding.Extensions": "4.0.11-beta-23516"
+        },
+        "compile": {
+          "lib/dotnet5.4/Microsoft.AspNet.JsonPatch.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/Microsoft.AspNet.JsonPatch.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Antiforgery/1.0.1": {
         "type": "package",
         "dependencies": {
@@ -3543,6 +3563,19 @@
         "runtimes/win7-arm/native/libuv.dll",
         "runtimes/win7-x64/native/libuv.dll",
         "runtimes/win7-x86/native/libuv.dll"
+      ]
+    },
+    "Microsoft.AspNet.JsonPatch/1.0.0-rc1-final": {
+      "sha512": "ymoIERwLlkXXffpKpFHZ6sjKz8HPwPqAbOnia1H3RAhyTYNJkahW6qWNXF96Fd66I1+m88pApWku+Ld0WD94Sg==",
+      "type": "package",
+      "path": "Microsoft.AspNet.JsonPatch/1.0.0-rc1-final",
+      "files": [
+        "Microsoft.AspNet.JsonPatch.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.JsonPatch.nuspec",
+        "lib/dotnet5.4/Microsoft.AspNet.JsonPatch.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.JsonPatch.xml",
+        "lib/net451/Microsoft.AspNet.JsonPatch.dll",
+        "lib/net451/Microsoft.AspNet.JsonPatch.xml"
       ]
     },
     "Microsoft.AspNetCore.Antiforgery/1.0.1": {
@@ -7767,6 +7800,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
+      "Microsoft.AspNet.JsonPatch >= 1.0.0-rc1-final",
       "Microsoft.AspNetCore.Mvc >= 1.0.1",
       "Microsoft.AspNetCore.Routing >= 1.0.1",
       "Microsoft.AspNetCore.Server.IISIntegration >= 1.0.0",

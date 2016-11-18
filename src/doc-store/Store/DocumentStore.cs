@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RethinkDb.Driver;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,11 @@ namespace doc_store.Store
             this.logger.LogInformation($"saved document '{document.Id}/{document.Name}' in db");
 
             return new DocumentAddResult() { Result = Result.Success, DocumentId = document.Id };
+        }
+
+        public StoreDocument AddExtractedText(Guid id, string extractedText)
+        {
+            return this.store.Value.AddExtractedText(id, extractedText);
         }
 
         public StoreDocument GetDocument(Guid id)
@@ -125,6 +131,40 @@ namespace doc_store.Store
              .Connect();
 
             documentTable.Insert(document).Run(c);
+        }
+
+        public StoreDocument AddExtractedText(Guid id, string extractedText)
+        {
+            var c = R.Connection()
+             .Hostname(ip)
+             .Port(RethinkDBConstants.DefaultPort)
+             .Timeout(60)
+             .Connect();
+
+            const string textExtractedState = "text-extracted";
+
+            StoreDocument document = this.documentTable.Get(id).Pluck("state").Run<StoreDocument>(c);
+
+            string[] states = new string[] { };
+
+            if (!document.State.Contains(textExtractedState))
+            {
+                var state = document.State.ToList();
+                state.Add(textExtractedState);
+                states = state.ToArray();
+            }
+
+            var update = new {
+                extractedText = extractedText,
+                updated = DateTime.UtcNow,
+                state = states
+            };
+
+            
+
+            var result = this.documentTable.Get(id).Update(update).Run(c);
+
+            return GetDocument(id);
         }
 
         public StoreDocument GetDocument(Guid id)

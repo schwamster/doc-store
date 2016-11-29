@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using doc_store.Store.StoreChangeFeed;
 
 namespace doc_store.Store
 {
@@ -26,7 +27,7 @@ namespace doc_store.Store
 
         public DocumentAddResult AddDocument(Document document)
         {
-            
+
             var storeInstance = this.store.Value;
 
             var toSave = new StoreDocument(document) {
@@ -40,13 +41,13 @@ namespace doc_store.Store
 
             //first check if the document maybe already exists - right now we will jusBt override
             var existingDoc = store.Value.GetDocument("client_name_user", store.Value.R.Array(toSave.Client, toSave.Name, toSave.User));
-                
+
             if(existingDoc != null)
             {
                 toSave.Version = existingDoc.Version + 1;
                 toSave.DocumentSequenceId = existingDoc.DocumentSequenceId;
             }
-           
+
 
             this.store.Value.InsertDocument(toSave);
             this.logger.LogInformation($"saved document '{document.Id}/{document.Name}' in db");
@@ -86,11 +87,7 @@ namespace doc_store.Store
 
             this.ip = GetIp(rethinkHost);
 
-            var c = R.Connection()
-             .Hostname(ip)
-             .Port(RethinkDBConstants.DefaultPort)
-             .Timeout(60)
-             .Connect();
+            RethinkDb.Driver.Net.Connection c = NewConnection();
 
             List<string> dbs = R.DbList().Run<List<string>>(c);
             if (!dbs.Contains(dbName))
@@ -120,26 +117,42 @@ namespace doc_store.Store
                 logger.LogInformation("Created all indexes");
             }
 
+            //upon initialization: change feeds
+            SubscribeToChanges(c);
         }
 
-        public void InsertDocument(object document)
+        private void SubscribeToChanges(RethinkDb.Driver.Net.Connection c)
         {
-            var c = R.Connection()
+            var changeFeed = new StoreChangeFeed.StoreChangeFeed(c);
+            changeFeed.Subscribe(new List<ChangeWatcher>()
+            {
+                new ChangeWatcher()
+                {
+                    ExpressionToWatch = documentTable,
+                    RunOnEvent = (t) => NotificationApiClient.PushNotification(t)
+                }
+            });
+        }
+
+        private RethinkDb.Driver.Net.Connection NewConnection()
+        {
+            return R.Connection()
              .Hostname(ip)
              .Port(RethinkDBConstants.DefaultPort)
              .Timeout(60)
              .Connect();
+        }
+
+        public void InsertDocument(object document)
+        {
+            var c = NewConnection();
 
             documentTable.Insert(document).Run(c);
         }
 
         public StoreDocument AddExtractedText(Guid id, string extractedText)
         {
-            var c = R.Connection()
-             .Hostname(ip)
-             .Port(RethinkDBConstants.DefaultPort)
-             .Timeout(60)
-             .Connect();
+            var c = NewConnection();
 
             const string textExtractedState = "text-extracted";
 
@@ -160,7 +173,7 @@ namespace doc_store.Store
                 state = states
             };
 
-            
+
 
             var result = this.documentTable.Get(id).Update(update).Run(c);
 
@@ -170,11 +183,7 @@ namespace doc_store.Store
         public StoreDocument GetDocument(Guid id)
         {
             //todo: is it smart to open the connection every time??
-            var c = R.Connection()
-             .Hostname(ip)
-             .Port(RethinkDBConstants.DefaultPort)
-             .Timeout(60)
-             .Connect();
+            var c = NewConnection();
 
             StoreDocument doc = this.documentTable.Get(id).Run<StoreDocument>(c);
             return doc;
@@ -183,11 +192,7 @@ namespace doc_store.Store
         public StoreDocument GetDocument(string index, params object[] exp)
         {
             //todo: is it smart to open the connection every time??
-            var c = R.Connection()
-             .Hostname(ip)
-             .Port(RethinkDBConstants.DefaultPort)
-             .Timeout(60)
-             .Connect();
+            var c = NewConnection();
 
             RethinkDb.Driver.Net.Cursor<StoreDocument> docs = this.documentTable.GetAll(exp)[new { index = index }].Run<StoreDocument>(c);
 

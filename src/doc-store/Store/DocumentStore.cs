@@ -117,11 +117,11 @@ namespace doc_store.Store
                 logger.LogInformation("Created all indexes");
             }
 
-            //upon initialization: change feeds
-            SubscribeToChanges(c);
+            var notificationClient = new NotificationApiClient(config, logger);
+            SubscribeToChanges(c, notificationClient);
         }
 
-        private void SubscribeToChanges(RethinkDb.Driver.Net.Connection c)
+        private void SubscribeToChanges(RethinkDb.Driver.Net.Connection c, NotificationApiClient notificationClient)
         {
             var changeFeed = new StoreChangeFeed.StoreChangeFeed(c);
             changeFeed.Subscribe(new List<ChangeWatcher>()
@@ -129,7 +129,7 @@ namespace doc_store.Store
                 new ChangeWatcher()
                 {
                     ExpressionToWatch = documentTable,
-                    RunOnEvent = (t) => NotificationApiClient.PushNotification(t)
+                    RunOnEvent = (t) => notificationClient.PushNotification(t)
                 }
             });
         }

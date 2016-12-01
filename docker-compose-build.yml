@@ -1,8 +1,6 @@
-version: '2'
-services:
-  doc-store-build:
-    image: microsoft/aspnetcore-build:1.1.0-projectjson
-    volumes:
-      - .:/sln
-    working_dir: /sln
-    entrypoint: ["sh", "./build-container.sh"]
+doc-store-build:
+  image: microsoft/aspnetcore-build:1.1.0-projectjson
+  volumes:
+    - .:/sln
+  working_dir: /sln
+  entrypoint: ["sh", "./build-container.sh"]

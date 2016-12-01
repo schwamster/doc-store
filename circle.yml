@@ -7,7 +7,7 @@ dependencies:
     - echo "$CIRCLE_TAG"
     - docker info
     - docker-compose -f docker-compose-build-circle.yml up
-    - docker build -t schwamster/doc_store ./publish/web/
+    - docker build -t schwamster/doc-store ./publish/web/
 
 test:
   override:
@@ -19,4 +19,4 @@ deployment:
     branch: master
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push schwamster/doc_store
+      - docker push schwamster/doc-store

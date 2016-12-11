@@ -9775,9 +9775,7 @@
       "Swashbuckle.SwaggerGen >= 6.0.0-beta902",
       "Swashbuckle.SwaggerUi >= 6.0.0-beta902"
     ],
-    ".NETCoreApp,Version=v1.1": [
-      "Microsoft.NETCore.App >= 1.1.0"
-    ]
+    ".NETCoreApp,Version=v1.1": []
   },
   "tools": {
     ".NETCoreApp,Version=v1.0": {

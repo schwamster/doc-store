@@ -36,7 +36,6 @@ namespace doc_store.Store
                 State = new[] { "persisted" },
                 Version = 1,
                 DocumentSequenceId = document.Id
-
             };
 
             //first check if the document maybe already exists - right now we will jusBt override

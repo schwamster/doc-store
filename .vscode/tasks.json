@@ -5,10 +5,13 @@
     "command": "dotnet",
     "isShellCommand": true,
     "args": [],
+    "options":{
+    "cwd": "${workspaceRoot}/Core"
+    },
     "tasks": [
         {
             "taskName": "build",
-            "args": [ ],
+            "args": [ "${workspaceRoot}\\src\\doc-store\\project.json" ],
             "isBuildCommand": true,
             "showOutput": "silent",
             "problemMatcher": "$msCompile"

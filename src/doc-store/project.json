@@ -1,9 +1,12 @@
 ﻿{
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true,
+    "xmlDoc": true
+  },
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "version": "1.1.0",
-      "type": "platform"
-    },
+    "Microsoft.AspNet.JsonPatch": "1.0.0-rc1-final",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
     "Microsoft.AspNetCore.Routing": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
@@ -15,25 +18,18 @@
     "Microsoft.Extensions.Logging.Console": "1.1.0",
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
-    "RethinkDb.Driver": "2.3.15",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.1.0"
+    },
     "Newtonsoft.Json": "9.0.1",
+    "RethinkDb.Driver": "2.3.15",
     "Swashbuckle.SwaggerGen": "6.0.0-beta902",
-    "Swashbuckle.SwaggerUi": "6.0.0-beta902",
-    "Microsoft.AspNet.JsonPatch" : "1.0.0-rc1-final"
-
+    "Swashbuckle.SwaggerUi": "6.0.0-beta902"
   },
-
-  "tools": {
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
-  },
-
   "frameworks": {
     "netcoreapp1.1": {
       "dependencies": {
-        "Microsoft.NETCore.App": {
-          "type": "platform",
-          "version": "1.1.0"
-        }
       },
       "imports": [
         "dotnet5.4",
@@ -41,19 +37,6 @@
       ]
     }
   },
-
-  "buildOptions": {
-    "emitEntryPoint": true,
-    "preserveCompilationContext": true,
-    "xmlDoc": true
-  },
-
-  "runtimeOptions": {
-    "configProperties": {
-      "System.GC.Server": true
-    }
-  },
-
   "publishOptions": {
     "include": [
       "wwwroot",
@@ -64,8 +47,15 @@
       "doc-store.xml"
     ]
   },
-
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  },
   "scripts": {
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+  },
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   }
 }

@@ -10,18 +10,28 @@ using Newtonsoft.Json;
 
 namespace doc_store.Store.StoreChangeFeed
 {
-    public class NotificationApiClient
+    public interface IActionOnEventRunner
+    {
+        /// <summary>
+        /// define an action to run when the event triggers
+        /// </summary>
+        /// <param name="target">the object that cotnains details about the action is executed for</param>
+        /// <returns></returns>
+        void ExecuteOnEvent(object target);
+    }
+
+    public class PushNotificationEventRunner : IActionOnEventRunner 
     {
         private readonly IConfiguration config;
         private readonly ILogger logger;
 
-        public NotificationApiClient(IConfiguration config, ILogger logger)
+        public PushNotificationEventRunner(IConfiguration config, ILogger logger)
         {
             this.config = config;
             this.logger = logger;
         }
 
-        public async void PushNotification(object obj)
+        public async void ExecuteOnEvent(object obj)
         {
             var content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
             using (var client = new HttpClient())

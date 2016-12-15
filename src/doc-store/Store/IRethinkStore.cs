@@ -8,31 +8,30 @@ using doc_store.Store.StoreChangeFeed;
 using RethinkDb.Driver;
 using System.Net;
 using System.Net.Sockets;
-
+using RethinkDb.Driver.Net;
 
 namespace doc_store.Store
 {
     public interface IRethinkStore
     {
-        IActionOnEventRunner eventRunner { get; set; }
+        void InsertDocument(object document);
         IStoreChangeFeed changeFeed { get; set; }
     }
 
     public class RethinkDbStore : IRethinkStore
     {
         public RethinkDB R = RethinkDB.R;
+        public IStoreChangeFeed changeFeed { get; set; }
+
         private ILogger logger;
         private string ip;
         private RethinkDb.Driver.Ast.Table documentTable;
         private IConfiguration configuration;
 
-        public IActionOnEventRunner eventRunner { get; set; }
-        public IStoreChangeFeed changeFeed { get; set; }
-
         public RethinkDbStore(IConfiguration config, ILogger log)
         {
             this.logger = log;
-
+            
             string rethinkHost = config["RethinkDb:Host"];
             string dbName = config["RethinkDb:DatabaseName"];
             string tableName = config["RethinkDb:TableName"];
@@ -49,11 +48,10 @@ namespace doc_store.Store
 
             EnsureIndexesExist(conn);
 
-            changeFeed = new RethinkChangeFeed(conn, new PushNotificationEventRunner(config, logger));
-            SubscribeToChanges();
+            SubscribeToChanges(conn, config, logger);
         }
 
-        private void EnsureIndexesExist(RethinkDb.Driver.Net.Connection c)
+        private void EnsureIndexesExist(Connection c)
         {
             const string name_client_user_index = "client_name_user";
             List<string> indexes = documentTable.IndexList().Run<List<string>>(c);
@@ -67,7 +65,7 @@ namespace doc_store.Store
             }
         }
 
-        private void EnsureTableExists(string tableName, RethinkDb.Driver.Net.Connection c, RethinkDb.Driver.Ast.Db db)
+        private void EnsureTableExists(string tableName, Connection c, RethinkDb.Driver.Ast.Db db)
         {
             List<string> tables = db.TableList().Run<List<string>>(c);
             if (!tables.Contains(tableName))
@@ -78,7 +76,7 @@ namespace doc_store.Store
             }
         }
 
-        private RethinkDb.Driver.Ast.Db EnsureDatabaseExists(string dbName, RethinkDb.Driver.Net.Connection c)
+        private RethinkDb.Driver.Ast.Db EnsureDatabaseExists(string dbName, Connection c)
         {
             List<string> dbs = R.DbList().Run<List<string>>(c);
             if (!dbs.Contains(dbName))
@@ -91,15 +89,22 @@ namespace doc_store.Store
             return db;
         }
 
-        private void SubscribeToChanges()
+
+        private void SubscribeToChanges(Connection conn, IConfiguration config, ILogger logger)
         {
+            changeFeed = new RethinkChangeFeed(conn, new PushNotificationEventRunner(config, logger))
+            {
+                // this will come later from the auth 
+                LimitWatchToClient = "1337" 
+            };
+
             changeFeed.Subscribe(new List<IRethinkChangeWatcher>()
             {
                 new RethinkChangeWatcher() { ExpressionToWatch = documentTable }
             });
         }
 
-        private RethinkDb.Driver.Net.Connection NewConnection()
+        private Connection NewConnection()
         {
             return R.Connection()
              .Hostname(ip)

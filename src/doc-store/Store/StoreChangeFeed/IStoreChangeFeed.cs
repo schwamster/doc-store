@@ -12,16 +12,24 @@ namespace doc_store.Store.StoreChangeFeed
     public interface IStoreChangeFeed
     {
         /// <summary>
+        /// change watchers will run only on specific clients if set; leave empty string to watch all clients.
+        /// </summary>
+        string LimitWatchToClient { get; set; }
+
+        /// <summary>
         /// subscribe to the desired change watchers
         /// </summary>
         /// <param name="watchers">the list of watchers</param>
-        void Subscribe(List<IRethinkChangeWatcher> watchers);
+        Task Subscribe(List<IRethinkChangeWatcher> watchers);
+
+        IActionOnEventRunner eventRunner { get; set; }
     }
 
     public class RethinkChangeFeed : IStoreChangeFeed
     {
         private readonly Connection conn;
-        private readonly IActionOnEventRunner eventRunner;
+        public IActionOnEventRunner eventRunner { get; set; }
+        public string LimitWatchToClient { get; set; }
 
         public RethinkChangeFeed(Connection conn, IActionOnEventRunner onEventRunner)
         {
@@ -29,9 +37,19 @@ namespace doc_store.Store.StoreChangeFeed
             this.eventRunner = onEventRunner;
         }
 
-        public void Subscribe(List<IRethinkChangeWatcher> watchers)
+        /// <summary>
+        /// Subscribes to changes for all watchers sent in param
+        /// </summary>
+        /// <param name="watchers"></param>
+        /// <returns></returns>
+        public async Task Subscribe(List<IRethinkChangeWatcher> watchers)
         {
-            watchers.ForEach(async w => await SubscribeToWatcher(w));
+            var tasks = new List<Task>();
+            watchers.ForEach(t => tasks.Add(SubscribeToWatcher(t)));
+
+            await Task.WhenAll(tasks);
+
+            //watchers.ForEach(async w => await SubscribeToWatcher(w));
         }
 
         /// <summary>
@@ -41,11 +59,14 @@ namespace doc_store.Store.StoreChangeFeed
         /// <returns></returns>
         private async Task SubscribeToWatcher(IRethinkChangeWatcher watcher)
         {
-            //TODO: implement filtering by client if specified in watcher 
-            var feed = await watcher.ExpressionToWatch.Changes().RunChangesAsync<object>(conn);
+            var waitFor = !string.IsNullOrEmpty(LimitWatchToClient) ?
+                watcher.ExpressionToWatch.Filter(t => t["client"].Eq(LimitWatchToClient)) :
+                watcher.ExpressionToWatch;
+
+            var feed = await waitFor.Changes().RunChangesAsync<object>(conn);
             while (await feed.MoveNextAsync())
             {
-                this.eventRunner.ExecuteOnEvent(feed.Current);
+                await eventRunner.ExecuteOnEvent(feed.Current);
             }
         }
     }

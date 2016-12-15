@@ -17,11 +17,6 @@ namespace doc_store.Store.StoreChangeFeed
         /// The rethinkDB expression you want to watch for changes. This can be either a table or some whatever expression like insert or smth
         /// </summary>
         ReqlExpr ExpressionToWatch { get; set; }
-
-        /// <summary>
-        /// set this if you want that your watched expression only for specific clients.  
-        /// </summary>
-        long? LimitWatchToSingleClient { get; set; }
     }
 
     /// <summary>
@@ -31,7 +26,5 @@ namespace doc_store.Store.StoreChangeFeed
     public class RethinkChangeWatcher : IRethinkChangeWatcher
     {
         public ReqlExpr ExpressionToWatch { get; set; }
-
-        public long? LimitWatchToSingleClient { get; set; }
     }
 }

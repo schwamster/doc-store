@@ -53,6 +53,17 @@ namespace doc_store.Controllers
         [HttpPost]
         public DocumentAddResult Post([FromBody]Document document)
         {
+            //this parsing could be a dotnetcore Middleware, that takes the encyrpted token from the httprequest, sends it to an Identity-API/verifytoken endpoint, then the identity API will check the JWT
+            //according to some secret that all APIs have access to (shared path, docker --volumes-from ) and if its verified ok, responds with OK then 
+            //the middleware in this API lets the request pass through to this controller.
+            var parsedAuthorizationBearerToken = new
+            {
+                username = "Jenny",
+                role= "admin",
+                client = "1337"
+            };
+            document.Client = parsedAuthorizationBearerToken.client;
+
             this.logger.LogInformation("document received");
             this.logger.LogInformation("Adding document to store");
             var result = this.store.AddDocument(document);

@@ -92,11 +92,7 @@ namespace doc_store.Store
 
         private void SubscribeToChanges(Connection conn, IConfiguration config, ILogger logger)
         {
-            changeFeed = new RethinkChangeFeed(conn, new PushNotificationEventRunner(config, logger))
-            {
-                // this will come later from the auth 
-                LimitWatchToClient = "1337" 
-            };
+            changeFeed = new RethinkChangeFeed(conn, new PushNotificationEventRunner(config, logger));
 
             changeFeed.Subscribe(new List<IRethinkChangeWatcher>()
             {

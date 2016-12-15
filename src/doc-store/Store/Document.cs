@@ -68,8 +68,7 @@ namespace doc_store.Store
         }
         public StoreDocument(Document document)
         {
-            //change client later to come from auth token instead of request body.
-            this.Client =  document.Client ?? "1337";
+            this.Client = document.Client;
             this.Content = document.Content;
             this.Id = document.Id;
             this.Name = document.Name;

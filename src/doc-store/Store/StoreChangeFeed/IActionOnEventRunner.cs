@@ -17,7 +17,7 @@ namespace doc_store.Store.StoreChangeFeed
         /// </summary>
         /// <param name="target">the object that cotnains details about the action is executed for</param>
         /// <returns></returns>
-        void ExecuteOnEvent(object target);
+        Task ExecuteOnEvent(object target);
     }
 
     public class PushNotificationEventRunner : IActionOnEventRunner 
@@ -31,7 +31,7 @@ namespace doc_store.Store.StoreChangeFeed
             this.logger = logger;
         }
 
-        public async void ExecuteOnEvent(object obj)
+        public async Task ExecuteOnEvent(object obj)
         {
             var content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
             using (var client = new HttpClient())

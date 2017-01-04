@@ -38,9 +38,9 @@ namespace doc_store.Store
 
             logger.LogInformation($"Initializing RethinkDb on host '{rethinkHost}'");
 
-            var conn = NewConnection();
             ip = GetIp(rethinkHost);
-
+            var conn = NewConnection();
+            
             RethinkDb.Driver.Ast.Db db = EnsureDatabaseExists(dbName, conn);
             EnsureTableExists(tableName, conn, db);
 

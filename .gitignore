@@ -10,3 +10,6 @@
 /src/doc-store/obj/Debug/netcoreapp1.1
 /test/doc-store.test/bin/Debug/netcoreapp1.1
 /test/doc-store.test/obj/Debug/netcoreapp1.1
+/src/doc-store/bin/release/netcoreapp1.1
+/src/doc-store/obj/release/netcoreapp1.1
+/testresults

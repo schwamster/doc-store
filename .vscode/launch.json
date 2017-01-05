@@ -8,7 +8,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}\\src\\doc-store\\bin\\Debug\\netcoreapp1.1\\doc-store.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}\\src\\doc-store",
             "stopAtEntry": false,
             "externalConsole": false
         },

@@ -36,11 +36,11 @@ namespace doc_store.Store
             string dbName = config["RethinkDb:DatabaseName"];
             string tableName = config["RethinkDb:TableName"];
 
-            logger.LogInformation($"Initializing RethinkDb on host '{rethinkHost}'");
-
-            var conn = NewConnection();
             ip = GetIp(rethinkHost);
-
+            logger.LogInformation($"Initializing RethinkDb on host '{rethinkHost}' with ip {ip}");
+            
+            var conn = NewConnection();
+            
             RethinkDb.Driver.Ast.Db db = EnsureDatabaseExists(dbName, conn);
             EnsureTableExists(tableName, conn, db);
 

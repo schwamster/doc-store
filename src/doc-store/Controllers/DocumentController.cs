@@ -8,10 +8,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.AspNet.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 
 namespace doc_store.Controllers
 {
-
+    [Authorize]
     [Route("api/[controller]")]
     public class DocumentController : Controller
     {

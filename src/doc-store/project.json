@@ -6,6 +6,7 @@
     "xmlDoc": true
   },
   "dependencies": {
+    "IdentityServer4.AccessTokenValidation": "1.0.5",
     "Microsoft.AspNet.JsonPatch": "1.0.0-rc1-final",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
     "Microsoft.AspNetCore.Routing": "1.1.0",
@@ -24,8 +25,12 @@
     },
     "Newtonsoft.Json": "9.0.1",
     "RethinkDb.Driver": "2.3.15",
-    "Swashbuckle.SwaggerGen": "6.0.0-beta902",
-    "Swashbuckle.SwaggerUi": "6.0.0-beta902"
+    "correlation-id-middleware": "1.1.1",
+    "serilog-enricher-middleware": "1.2.1",
+    "performance-log-middleware": "1.1.0-beta-13",
+    "custom-serilog-formatter": "1.2.0",
+    "health-check-middleware": "1.1.0",
+    "Swashbuckle.AspNetCore": "1.0.0-rc1"
   },
   "frameworks": {
     "netcoreapp1.1": {

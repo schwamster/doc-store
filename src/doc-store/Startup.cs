@@ -15,6 +15,11 @@ using CorrelationId;
 using SerilogEnricher;
 using PerformanceLog;
 using HealthCheck;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 
 namespace doc_store
 {
@@ -106,6 +111,28 @@ namespace doc_store
                 Authority = $"{identityServer}",
                 ApiName = "doc-store",
                 RequireHttpsMetadata = false,
+
+                //JwtBearerEvents = new JwtBearerEvents()
+                //{
+                //    OnTokenValidated = async (context) =>
+                //    {
+                //        var principal = (ClaimsPrincipal)context.Ticket.Principal;
+                //        var identity = (ClaimsIdentity)principal.Identity;
+
+                //        var accessToken = ((JwtSecurityToken)context.SecurityToken).RawData;
+                //        identity.AddClaim(new Claim("token", accessToken));
+
+                //        var discoveryClient = new DiscoveryClient(context.Options.Authority, null);
+                //        var doc = await discoveryClient.GetAsync();
+
+                //        var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
+
+                //        var response = await userInfoClient.GetAsync(accessToken);
+                //        identity.AddClaims(response.Claims);
+
+                //        context.Ticket = new AuthenticationTicket(principal, context.Ticket.Properties, context.Ticket.AuthenticationScheme);
+                //    }
+                //}
             });
 
             app.UseMvc();
